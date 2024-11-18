@@ -154,39 +154,29 @@ class Net(nn.Module):
         self.conv1 = nn.Conv2d(3, 6, kernel_size=5, padding=2)
         self.conv2 = nn.Conv2d(6, 16, kernel_size=5, padding=2)
         self.conv3 = nn.Conv2d(16, 128, kernel_size=3, padding=1)
-        
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
-        
         self.feature_size = self._get_conv_output((3, 32, 32))
-
         self.fc1 = nn.Linear(self.feature_size, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 10)
-
     def _get_conv_output(self, shape):
         input = torch.rand(1, *shape)
         output = self.forward_features(input)
         return int(np.prod(output.size()))
-
     def forward_features(self, x):
         x = F.relu(self.conv1(x))
         x = self.pool(x)
-        
         x = F.relu(self.conv2(x))
         x = self.pool(x)
-        
         x = F.relu(self.conv3(x))
         x = self.pool(x)
-        
         return x
-
     def forward(self, x):
         x = self.forward_features(x)
         x = x.view(-1, self.feature_size)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
-
         return x
 
 net = Net()
@@ -215,10 +205,8 @@ for epoch in range(num_epochs):
         _, predicted = torch.max(outputs.data, 1)
         total_train += labels.size(0)
         correct_train += (predicted == labels).sum().item()
-    
     train_losses.append(running_loss / (i + 1))
     train_accuracies.append(100 * correct_train / total_train)
-    
     net.eval()
     running_loss = 0.0
     correct_valid = 0
@@ -232,10 +220,8 @@ for epoch in range(num_epochs):
             _, predicted = torch.max(outputs.data, 1)
             total_valid += labels.size(0)
             correct_valid += (predicted == labels).sum().item()
-    
     valid_losses.append(running_loss / len(testloader))
     valid_accuracies.append(100 * correct_valid / total_valid)
-    
     print(f'Epoch {epoch+1}, Train Loss: {train_losses[-1]:.3f}, Train Acc: {train_accuracies[-1]:.2f}%, Val Loss: {valid_losses[-1]:.3f}, Val Acc: {valid_accuracies[-1]:.2f}%')
 
 net.eval()
