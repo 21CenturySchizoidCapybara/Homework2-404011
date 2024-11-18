@@ -2,19 +2,19 @@ import tensorflow as tf
 from tensorflow import keras
 from sklearn.model_selection import train_test_split
 import numpy as np
-# 加载MNIST数据集
+# Load MNIST dataset
 (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
 print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
-# 变形
+# Deformation
 x_train = x_train.reshape(x_train.shape[0], -1)
 x_test = x_test.reshape(x_test.shape[0], -1)
-# 归一
+# Normalization
 x_train = x_train.astype('float32') / 255
 x_test = x_test.astype('float32') / 255
-# 拆分
+# Split
 x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size = 0.5, random_state = 42)
 print(x_train.shape, y_train.shape, x_val.shape, y_val.shape)
-# 定义Keras的Sequential API模型
+# Define Model
 model1 = keras.Sequential([
     keras.layers.Dense(512, activation='relu', input_shape=(784,)),
     keras.layers.Dense(10, activation='softmax')
@@ -41,7 +41,7 @@ model6 = keras.Sequential([
     keras.layers.Dense(512, activation='relu'),
     keras.layers.Dense(10, activation='softmax')
 ])
-# 编译模型
+# Compile model
 model1.compile(
     optimizer='sgd',
     loss='sparse_categorical_crossentropy',
@@ -77,16 +77,16 @@ model6.compile(
     loss='sparse_categorical_crossentropy',
     metrics=['accuracy']
 )
-# 数据增强
+# Data Augmentation
 data_augmentation = keras.preprocessing.image.ImageDataGenerator(
     width_shift_range=0.1,
     height_shift_range=0.1,
     horizontal_flip=True,
     zoom_range=0.1
 )
-# 早停
+# Early Stopping
 early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
-# 训练模型
+# Train Model
 history1 = model1.fit(
     x_train, y_train,
     epochs=10,
@@ -118,7 +118,6 @@ history5 = model5.fit(
     validation_data=(x_val, y_val),
     batch_size=32,
 )
-# 重塑数据以适应ImageDataGenerator
 xv_train = x_train.reshape(x_train.shape[0], 28, 28, 1)
 xv_val = x_val.reshape(x_val.shape[0], 28, 28, 1)
 print(xv_train.shape, xv_val.shape)
