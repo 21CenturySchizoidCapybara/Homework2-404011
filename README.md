@@ -137,17 +137,18 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
+
 transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
-
+# Data loading and transformation
 trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
 trainloader = torch.utils.data.DataLoader(trainset, batch_size=4, shuffle=True, num_workers=2)
 
 testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
 testloader = torch.utils.data.DataLoader(testset, batch_size=4, shuffle=False, num_workers=2)
-
+# Neural Network Model Definition
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -178,16 +179,16 @@ class Net(nn.Module):
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
         return x
-
+# Model instantiation, loss function, and optimizer
 net = Net()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
-
+# Lists to track training and validation metrics
 train_losses = []
 valid_losses = []
 train_accuracies = []
 valid_accuracies = []
-
+# Training and validation loop
 num_epochs = 10
 for epoch in range(num_epochs):
     net.train()
@@ -223,7 +224,7 @@ for epoch in range(num_epochs):
     valid_losses.append(running_loss / len(testloader))
     valid_accuracies.append(100 * correct_valid / total_valid)
     print(f'Epoch {epoch+1}, Train Loss: {train_losses[-1]:.3f}, Train Acc: {train_accuracies[-1]:.2f}%, Val Loss: {valid_losses[-1]:.3f}, Val Acc: {valid_accuracies[-1]:.2f}%')
-
+# Testing phase
 net.eval()
 correct_test = 0
 total_test = 0
