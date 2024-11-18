@@ -1,4 +1,4 @@
-#MLP
+# MLP
 import tensorflow as tf 
 from tensorflow import keras
 from sklearn.model_selection import train_test_split
@@ -129,8 +129,7 @@ history6 = model6.fit(
     steps_per_epoch=len(xv_train) // 32  
 )
 
-#CNN
-
+# CNN
 import torch
 import torchvision
 import torchvision.transforms as transforms
